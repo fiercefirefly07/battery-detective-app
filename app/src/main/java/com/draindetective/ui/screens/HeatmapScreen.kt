@@ -12,8 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,70 +81,77 @@ fun HeatmapScreen(
         }
 
         // 24 Cells Grid (4 columns x 6 rows)
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(4),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(24) { hour ->
-                val stat = summary.hourlyStats[hour]
-                val drop = stat?.totalDrop ?: 0
-                val isWorst = (hour == worstHour && drop > 0)
-
-                val cellBg = when {
-                    isWorst -> FlameRed.copy(alpha = 0.35f)
-                    drop >= 8 -> FlameOrange.copy(alpha = 0.28f)
-                    drop >= 4 -> AmberGold.copy(alpha = 0.22f)
-                    drop > 0 -> TealNeon.copy(alpha = 0.15f)
-                    else -> CardElevated
-                }
-
-                val borderColor = when {
-                    isWorst -> FlameRed
-                    drop >= 8 -> FlameOrange
-                    drop > 0 -> TealNeon.copy(alpha = 0.4f)
-                    else -> CardBorder
-                }
-
-                Box(
-                    modifier = Modifier
-                        .height(74.dp)
-                        .background(cellBg, RoundedCornerShape(14.dp))
-                        .border(1.dp, borderColor, RoundedCornerShape(14.dp))
-                        .clickable { onSelectHour(hour) }
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
+            for (row in 0 until 6) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(2.dp)
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = "%02d:00".format(hour),
-                                color = TextMuted,
-                                fontSize = 11.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                            if (isWorst) {
-                                Spacer(Modifier.width(2.dp))
-                                Text("🔥", fontSize = 10.sp)
-                            }
+                    for (col in 0 until 4) {
+                        val hour = row * 4 + col
+                        val stat = summary.hourlyStats[hour]
+                        val drop = stat?.totalDrop ?: 0
+                        val isWorst = (hour == worstHour && drop > 0)
+
+                        val cellBg = when {
+                            isWorst -> FlameRed.copy(alpha = 0.35f)
+                            drop >= 8 -> FlameOrange.copy(alpha = 0.28f)
+                            drop >= 4 -> AmberGold.copy(alpha = 0.22f)
+                            drop > 0 -> TealNeon.copy(alpha = 0.15f)
+                            else -> CardElevated
                         }
 
-                        Text(
-                            text = if (drop > 0) "-$drop%" else if (stat?.isSparse == true) "--" else "0%",
-                            color = if (isWorst) FlameRed else if (drop > 0) TextPrimary else TextMuted,
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold
-                        )
+                        val borderColor = when {
+                            isWorst -> FlameRed
+                            drop >= 8 -> FlameOrange
+                            drop > 0 -> TealNeon.copy(alpha = 0.4f)
+                            else -> CardBorder
+                        }
 
-                        Text(
-                            text = if (stat?.chargingSampleCount ?: 0 > 0) "⚡ Chg" else if (stat?.isSparse == true) "Sparse" else "${stat?.readingCount} pts",
-                            color = if (stat?.chargingSampleCount ?: 0 > 0) TealNeon else TextMuted,
-                            fontSize = 9.sp
-                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(74.dp)
+                                .background(cellBg, RoundedCornerShape(14.dp))
+                                .border(1.dp, borderColor, RoundedCornerShape(14.dp))
+                                .clickable { onSelectHour(hour) }
+                                .padding(8.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "%02d:00".format(hour),
+                                        color = TextMuted,
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    if (isWorst) {
+                                        Spacer(Modifier.width(2.dp))
+                                        Text("🔥", fontSize = 10.sp)
+                                    }
+                                }
+
+                                Text(
+                                    text = if (drop > 0) "-$drop%" else if (stat?.isSparse == true) "--" else "0%",
+                                    color = if (isWorst) FlameRed else if (drop > 0) TextPrimary else TextMuted,
+                                    fontSize = 15.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                Text(
+                                    text = if (stat?.chargingSampleCount ?: 0 > 0) "⚡ Chg" else if (stat?.isSparse == true) "Sparse" else "${stat?.readingCount} pts",
+                                    color = if (stat?.chargingSampleCount ?: 0 > 0) TealNeon else TextMuted,
+                                    fontSize = 9.sp
+                                )
+                            }
+                        }
                     }
                 }
             }
