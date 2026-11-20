@@ -103,133 +103,96 @@ fun SettingsScreen(
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         // Header
-        Column {
+        Column(modifier = Modifier.padding(bottom = 8.dp)) {
             Text(
                 text = "Settings & Forensics",
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.ExtraBold,
                 color = TextPrimary
             )
             Text(
-                text = "Background duty, context sensors, notifications, and judge demo controls.",
+                text = "Configure your monitoring, alerts, and system permissions.",
                 color = TextSecondary,
-                fontSize = 13.sp
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 
         // Section 1: Detective on Duty (Foreground Service)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(CardElevated, RoundedCornerShape(20.dp))
-                .border(1.dp, if (isDetectiveDutyActive) TealNeon else CardBorder, RoundedCornerShape(20.dp))
-                .padding(18.dp)
+        SettingCard(
+            icon = "🕵️",
+            title = "Detective on Duty",
+            subtitle = "Continuous situational sensor sampling (Requires persistent notification).",
+            isActive = isDetectiveDutyActive
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("🕵️", fontSize = 18.sp)
-                            Spacer(Modifier.width(6.dp))
-                            Text(
-                                text = "Detective on Duty",
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = TextPrimary
-                            )
-                        }
-                        Text(
-                            text = "Continuous situational sensor sampling via foreground service",
-                            color = TextSecondary,
-                            fontSize = 12.sp
-                        )
-                    }
-                    Switch(
-                        checked = isDetectiveDutyActive,
-                        onCheckedChange = { enable ->
-                            if (enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
-                                notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                            }
-                            onToggleDetectiveDuty(enable)
-                        },
-                        colors = SwitchDefaults.colors(
-                            checkedTrackColor = TealNeon,
-                            checkedThumbColor = BgDark,
-                            uncheckedTrackColor = CardBorder
-                        )
-                    )
-                }
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = "Android strictly limits hardware sensor access when apps run in the standard background. 'Detective on Duty' runs a persistent low-power foreground service, enabling continuous proximity, light, and motion sampling to classify whether your phone was on a desk, in a pocket, or moving.",
-                    color = TextMuted,
-                    fontSize = 11.sp,
-                    lineHeight = 15.sp
+                    text = "Always-on monitoring",
+                    color = TextPrimary,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
+                Switch(
+                    checked = isDetectiveDutyActive,
+                    onCheckedChange = { enable ->
+                        if (enable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !hasNotificationPermission) {
+                            notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        onToggleDetectiveDuty(enable)
+                    },
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = TealNeon,
+                        checkedThumbColor = BgDark,
+                        uncheckedTrackColor = CardBorder
+                    )
                 )
             }
+            Text(
+                text = "Runs a low-power service to continuously monitor sensors and detect if your phone is in a pocket, moving, or on a desk.",
+                color = TextMuted,
+                fontSize = 12.sp,
+                lineHeight = 16.sp,
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
 
         // Section 2: Standard WorkManager Background Recording
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(CardElevated, RoundedCornerShape(20.dp))
-                .border(1.dp, CardBorder, RoundedCornerShape(20.dp))
-                .padding(18.dp)
+        SettingCard(
+            icon = "⏱️",
+            title = "Background Sync",
+            subtitle = "Periodic battery snapshots (Every ~15 mins).",
+            isActive = isBackgroundEnabled
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "WorkManager Background Worker",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextPrimary
-                        )
-                        Text(
-                            text = "PeriodicWorkRequest (15 min interval, KEEP policy)",
-                            color = TextSecondary,
-                            fontSize = 12.sp
-                        )
-                    }
-                    Switch(
-                        checked = isBackgroundEnabled,
-                        onCheckedChange = onToggleBackground,
-                        colors = SwitchDefaults.colors(
-                            checkedTrackColor = TealNeon,
-                            checkedThumbColor = BgDark,
-                            uncheckedTrackColor = CardBorder
-                        )
-                    )
-                }
-
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
                     Text(
-                        text = "Last background reading: ",
-                        color = TextMuted,
+                        text = "Enable Sync",
+                        color = TextPrimary,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = "Last synced: $lastBgText",
+                        color = if (isBackgroundEnabled) TealNeon else TextMuted,
                         fontSize = 12.sp
                     )
-                    Text(
-                        text = lastBgText,
-                        color = if (isBackgroundEnabled) TealNeon else TextMuted,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold
-                    )
                 }
-
-                Text(
-                    text = "Constraint-free background worker ensures battery drops are recorded even in low-power states. Note: Standard WorkManager runs without foreground sensor privileges, labeling background readings as 'UNKNOWN' context unless Detective on Duty is active.",
-                    color = TextMuted,
-                    fontSize = 11.sp,
-                    lineHeight = 15.sp
+                Switch(
+                    checked = isBackgroundEnabled,
+                    onCheckedChange = onToggleBackground,
+                    colors = SwitchDefaults.colors(
+                        checkedTrackColor = TealNeon,
+                        checkedThumbColor = BgDark,
+                        uncheckedTrackColor = CardBorder
+                    )
                 )
             }
         }
@@ -275,50 +238,23 @@ fun SettingsScreen(
         }
 
         // Section 4: Usage Stats Access (Suspect Lineup)
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(CardElevated, RoundedCornerShape(20.dp))
-                .border(1.dp, CardBorder, RoundedCornerShape(20.dp))
-                .padding(18.dp)
+        SettingCard(
+            icon = "📊",
+            title = "App Usage Access",
+            subtitle = "Required to identify which apps are draining your battery.",
+            isActive = hasUsagePermission
         ) {
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "App Usage Access",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextPrimary
-                        )
-                        Text(
-                            text = "Required for Suspect Lineup foreground app detection",
-                            color = TextSecondary,
-                            fontSize = 12.sp
-                        )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                if (hasUsagePermission) TealNeon.copy(alpha = 0.2f) else AmberGold.copy(alpha = 0.2f),
-                                RoundedCornerShape(8.dp)
-                            )
-                            .padding(horizontal = 8.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            text = if (hasUsagePermission) "Granted" else "Missing",
-                            color = if (hasUsagePermission) TealNeon else AmberGold,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = if (hasUsagePermission) "Access Granted" else "Action Required",
+                    color = if (hasUsagePermission) TealNeon else AmberGold,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                )
                 Button(
                     onClick = {
                         try {
@@ -333,7 +269,7 @@ fun SettingsScreen(
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = if (hasUsagePermission) "Review System Settings" else "Grant Usage Access",
+                        text = if (hasUsagePermission) "Review Settings" else "Grant Access",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -436,5 +372,50 @@ fun SettingsScreen(
         }
 
         Spacer(Modifier.height(80.dp))
+    }
+}
+
+@Composable
+fun SettingCard(
+    icon: String,
+    title: String,
+    subtitle: String,
+    isActive: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(CardElevated, RoundedCornerShape(20.dp))
+            .border(1.dp, if (isActive) TealNeon.copy(alpha = 0.5f) else CardBorder, RoundedCornerShape(20.dp))
+            .padding(20.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .background(if (isActive) TealNeon.copy(alpha = 0.15f) else CardBorder.copy(alpha = 0.3f), RoundedCornerShape(12.dp))
+                        .padding(10.dp)
+                ) {
+                    Text(icon, fontSize = 20.sp)
+                }
+                Spacer(Modifier.width(16.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary
+                    )
+                    Text(
+                        text = subtitle,
+                        color = TextSecondary,
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp
+                    )
+                }
+            }
+            content()
+        }
     }
 }

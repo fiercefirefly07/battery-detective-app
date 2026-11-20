@@ -71,17 +71,18 @@ fun IncidentsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
-            Column {
+            Column(modifier = Modifier.padding(bottom = 8.dp)) {
                 Text(
-                    text = "📦 Black Box Incidents",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
+                    text = "Drain Spikes & Incidents",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.ExtraBold,
                     color = TextPrimary
                 )
                 Text(
-                    text = "High-resolution 10-minute flight recorder triggered during acute drain spikes.",
+                    text = "High-resolution flight recorder captures device telemetry when sudden battery drain occurs.",
                     color = TextSecondary,
-                    fontSize = 13.sp
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
             }
         }
@@ -136,27 +137,35 @@ fun IncidentsScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(CardElevated, RoundedCornerShape(20.dp))
-                        .border(1.dp, CardBorder, RoundedCornerShape(20.dp))
-                        .padding(32.dp),
+                        .background(CardElevated, RoundedCornerShape(24.dp))
+                        .border(1.dp, CardBorder, RoundedCornerShape(24.dp))
+                        .padding(40.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-                        Text("🛡️", fontSize = 42.sp)
+                        Box(
+                            modifier = Modifier
+                                .size(80.dp)
+                                .background(CardBorder.copy(alpha = 0.3f), RoundedCornerShape(40.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("🛡️", fontSize = 42.sp)
+                        }
                         Text(
-                            text = "No Flight Incidents Logged",
+                            text = "No Drain Spikes Logged",
                             color = TextPrimary,
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "Black Box automatically triggers high-resolution capture when sudden battery drop spikes (>= 3% in 15m) occur. You can seed a realistic demo incident in Settings.",
+                            text = "Your battery is running smoothly! If a sudden drain (≥ 3% in 15 mins) occurs, the high-resolution recorder will automatically capture it here.",
                             color = TextSecondary,
-                            fontSize = 12.sp,
-                            textAlign = TextAlign.Center
+                            fontSize = 14.sp,
+                            textAlign = TextAlign.Center,
+                            lineHeight = 20.sp
                         )
                     }
                 }
