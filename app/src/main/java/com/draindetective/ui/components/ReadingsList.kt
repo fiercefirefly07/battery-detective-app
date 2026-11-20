@@ -176,26 +176,39 @@ private fun Chip(text: String, color: Color) {
 
 @Composable
 fun EmptyReadingsState(modifier: Modifier = Modifier) {
-    Column(
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 40.dp, horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .background(CardElevated, RoundedCornerShape(20.dp))
+            .border(1.dp, CardBorder, RoundedCornerShape(20.dp))
+            .padding(40.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Text("🔋", fontSize = 48.sp)
-        Spacer(Modifier.height(14.dp))
-        Text(
-            text = "No battery readings yet",
-            color = TextPrimary,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            text = "Tap '+ Save reading' below to record your first snapshot, or visit About to seed 3 days of demo data.",
-            color = TextSecondary,
-            fontSize = 13.sp,
-            textAlign = TextAlign.Center
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(80.dp)
+                    .background(CardBorder.copy(alpha = 0.3f), RoundedCornerShape(40.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("🔋", fontSize = 42.sp)
+            }
+            Text(
+                text = "No Battery Snapshots",
+                color = TextPrimary,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = "Tap '+ Save reading' below to record your first manual snapshot, or visit the Settings tab to start background monitoring.",
+                color = TextSecondary,
+                fontSize = 14.sp,
+                textAlign = TextAlign.Center,
+                lineHeight = 20.sp
+            )
+        }
     }
 }

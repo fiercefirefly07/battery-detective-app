@@ -2,22 +2,22 @@ package com.draindetective.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val BgDark = Color(0xFF0A1020)
-val BgDarkVariant = Color(0xFF10182E)
-val CardBg = Color(0xFF16213E)
-val CardElevated = Color(0xFF1B2745)
-val CardBorder = Color(0xFF27375E)
+val BgDark = Color(0xFF030305)
+val BgDarkVariant = Color(0xFF07070B)
+val CardBg = Color(0xFF0B0D13)
+val CardElevated = Color(0xFF0F1219)
+val CardBorder = Color(0xFF1E2433)
 
-val TealNeon = Color(0xFF2DE2C0)
-val AmberGold = Color(0xFFFFC857)
-val FlameRed = Color(0xFFFF5D73)
-val FlameOrange = Color(0xFFFF7A45)
-val PurpleAccent = Color(0xFF8A4FFF)
-val BlueAccent = Color(0xFF3B82F6)
+val TealNeon = Color(0xFF00FFCC) // Cyberpunk Cyan
+val AmberGold = Color(0xFFFFB800) // Electric Yellow
+val FlameRed = Color(0xFFFF2A55) // Neon Pink/Red
+val FlameOrange = Color(0xFFFF6600)
+val PurpleAccent = Color(0xFF9D00FF) // Deep Violet
+val BlueAccent = Color(0xFF0066FF)
 
 val TextPrimary = Color(0xFFFFFFFF)
-val TextSecondary = Color(0xFF8FA0C4)
-val TextMuted = Color(0xFF5E7199)
+val TextSecondary = Color(0xFFA0AABF)
+val TextMuted = Color(0xFF4A5568)
 
 fun batteryLevelColor(level: Int): Color = when {
     level > 50 -> TealNeon
