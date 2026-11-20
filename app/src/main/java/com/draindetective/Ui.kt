@@ -1,5 +1,10 @@
 package com.draindetective
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,13 +16,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Analytics
+import androidx.compose.material.icons.rounded.BatteryChargingFull
+import androidx.compose.material.icons.rounded.BugReport
+import androidx.compose.material.icons.rounded.DirectionsRun
+import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,6 +67,7 @@ import com.draindetective.ui.theme.TealNeon
 import com.draindetective.ui.theme.TextMuted
 import com.draindetective.ui.theme.TextPrimary
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Root(vm: MainViewModel = viewModel()) {
     val readings by vm.readings.collectAsStateWithLifecycle()
@@ -85,6 +102,21 @@ fun Root(vm: MainViewModel = viewModel()) {
                 .fillMaxSize()
                 .background(Brush.verticalGradient(listOf(BgDark, BgDarkVariant))),
             containerColor = Color.Transparent,
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = "Drain Detective",
+                            fontWeight = FontWeight.Bold,
+                            color = TealNeon
+                        )
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = TealNeon
+                    )
+                )
+            },
             floatingActionButton = {
                 if (currentTab == 0) {
                     ExtendedFloatingActionButton(
@@ -104,20 +136,21 @@ fun Root(vm: MainViewModel = viewModel()) {
             bottomBar = {
                 NavigationBar(
                     containerColor = CardElevated,
-                    modifier = Modifier.navigationBarsPadding()
+                    modifier = Modifier.navigationBarsPadding(),
+                    tonalElevation = 8.dp
                 ) {
                     val tabs = listOf(
-                        "🔋" to "Readings",
-                        "📊" to "Hourly",
-                        "👻" to "Ghost",
-                        "📦" to "Incidents",
-                        "⚙️" to "Settings"
+                        Icons.Rounded.BatteryChargingFull to "Readings",
+                        Icons.Rounded.Analytics to "Hourly",
+                        Icons.Rounded.DirectionsRun to "Ghost",
+                        Icons.Rounded.BugReport to "Incidents",
+                        Icons.Rounded.Settings to "Settings"
                     )
-                    tabs.forEachIndexed { index, (emoji, title) ->
+                    tabs.forEachIndexed { index, (icon, title) ->
                         NavigationBarItem(
                             selected = currentTab == index,
                             onClick = { currentTab = index },
-                            icon = { Text(emoji, fontSize = 20.sp) },
+                            icon = { Icon(icon, contentDescription = title) },
                             label = {
                                 Text(
                                     text = title,
@@ -141,9 +174,15 @@ fun Root(vm: MainViewModel = viewModel()) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .statusBarsPadding()
             ) {
-                when (currentTab) {
+                AnimatedContent(
+                    targetState = currentTab,
+                    transitionSpec = {
+                        fadeIn(animationSpec = tween(300)) togetherWith fadeOut(animationSpec = tween(300))
+                    },
+                    label = "tab_transition"
+                ) { targetTab ->
+                    when (targetTab) {
                     0 -> {
                         // Readings Tab: Gauge, Worst Hour Hero, Context Fingerprint Chart, Snapshots List
                         LazyColumn(
@@ -260,6 +299,7 @@ fun Root(vm: MainViewModel = viewModel()) {
                             totalReadingsCount = readings.size
                         )
                     }
+                }
                 }
 
                 // Case File Dialog / Inspector
