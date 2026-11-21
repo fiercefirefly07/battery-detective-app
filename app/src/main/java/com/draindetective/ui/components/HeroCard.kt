@@ -83,6 +83,20 @@ fun BatteryHeroGauge(
                 val inset = strokeWidth / 2f
                 val arcSize = Size(size.width - (inset * 2), size.height - (inset * 2))
 
+                // Sci-fi outer ring (dashed)
+                drawArc(
+                    color = TealNeon.copy(alpha = 0.3f),
+                    startAngle = 0f,
+                    sweepAngle = 360f,
+                    useCenter = false,
+                    topLeft = Offset(inset - 6.dp.toPx(), inset - 6.dp.toPx()),
+                    size = Size(arcSize.width + 12.dp.toPx(), arcSize.height + 12.dp.toPx()),
+                    style = Stroke(
+                        width = 1.dp.toPx(),
+                        pathEffect = androidx.compose.ui.graphics.PathEffect.dashPathEffect(floatArrayOf(15f, 15f), 0f)
+                    )
+                )
+
                 // Background track
                 drawArc(
                     color = Color.White.copy(alpha = 0.08f),
@@ -132,24 +146,28 @@ fun BatteryHeroGauge(
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
-                text = "Drain Detective",
+                text = "DRAIN DETECTIVE",
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                fontWeight = FontWeight.ExtraBold,
+                color = TextPrimary,
+                letterSpacing = 1.5.sp
             )
 
             Text(
-                text = if (isRecording) "Auto-logging every 15 min" else "Foreground log paused",
-                color = TextSecondary,
-                fontSize = 12.sp
+                text = if (isRecording) "AUTO-LOGGING ACTIVE" else "FOREGROUND PAUSED",
+                color = TealNeon,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
             )
 
             if (estimatedHours != null && !isCharging) {
                 Text(
-                    text = "Est: ${"%.1f".format(estimatedHours)}h to empty",
+                    text = "EST: ${"%.1f".format(estimatedHours)}H TO EMPTY",
                     color = AmberGold,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp
                 )
             }
 
@@ -216,10 +234,11 @@ fun WorstDrainHeroCard(
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "Worst Drain Hour",
+                text = "WORST DRAIN HOUR",
                 color = TextSecondary,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.2.sp
             )
 
             if (worstHero != null && worstStat != null) {
@@ -227,7 +246,8 @@ fun WorstDrainHeroCard(
                     text = worstHero.labelRange,
                     color = TextPrimary,
                     fontSize = 26.sp,
-                    fontWeight = FontWeight.ExtraBold
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 0.5.sp
                 )
 
                 Spacer(Modifier.height(2.dp))

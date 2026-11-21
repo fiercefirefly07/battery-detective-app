@@ -20,7 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Analytics
 import androidx.compose.material.icons.rounded.BatteryChargingFull
 import androidx.compose.material.icons.rounded.BugReport
-import androidx.compose.material.icons.rounded.DirectionsRun
+import androidx.compose.material.icons.automirrored.rounded.DirectionsRun
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -142,7 +142,7 @@ fun Root(vm: MainViewModel = viewModel()) {
                     val tabs = listOf(
                         Icons.Rounded.BatteryChargingFull to "Readings",
                         Icons.Rounded.Analytics to "Hourly",
-                        Icons.Rounded.DirectionsRun to "Ghost",
+                        Icons.AutoMirrored.Rounded.DirectionsRun to "Ghost",
                         Icons.Rounded.BugReport to "Incidents",
                         Icons.Rounded.Settings to "Settings"
                     )

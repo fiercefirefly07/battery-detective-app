@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -41,10 +42,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     val summary: StateFlow<AnalysisSummary> = readings
         .map { list -> DrainAnalyzer.analyze(list) }
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DrainAnalyzer.analyze(emptyList()))
 
     val ghostRaceSummary: StateFlow<GhostRaceSummary> = readings
         .map { list -> GhostRaceAnalyzer.analyze(list) }
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), GhostRaceAnalyzer.analyze(emptyList()))
 
     private val _isForegroundRecording = MutableStateFlow(true)
